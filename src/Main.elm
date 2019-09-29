@@ -1,45 +1,65 @@
-module Main exposing (..)
+module Main exposing (Model, Msg(..), init, main, update, view, viewWaffles)
 
 import Browser
-import Html exposing (Html, text, div, h1, img)
-import Html.Attributes exposing (src)
+import Html exposing (Html, button, div, h1, img, text)
+import Html.Attributes exposing (class, src)
+import Html.Events exposing (onClick)
 
 
----- MODEL ----
+
+-- MODEL
 
 
 type alias Model =
-    {}
+    Int
 
 
-init : ( Model, Cmd Msg )
+init : Model
 init =
-    ( {}, Cmd.none )
+    0
 
 
 
----- UPDATE ----
+-- UPDATE
 
 
 type Msg
-    = NoOp
+    = Increment
+    | Decrement
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : Msg -> Model -> Model
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        Increment ->
+            model + 1
+
+        Decrement ->
+            if model == 0 then
+                model
+
+            else
+                model - 1
 
 
 
----- VIEW ----
+-- VIEW
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ img [ src "/logo.svg" ] []
-        , h1 [] [ text "Your Elm App is working!" ]
+        [ h1 [] [ text ("Ragnhilds vaffelbutikk: " ++ String.fromInt model ++ " vafler") ]
+        , button [ onClick Increment ] [ text "Lag vaffel" ]
+        , button [ onClick Decrement ] [ text "Spis vaffel" ]
+        , viewWaffles model
         ]
+
+
+viewWaffles : Model -> Html Msg
+viewWaffles model =
+    div []
+        (List.repeat model (img [ class "img", src "static/img/waffle.png" ] []))
 
 
 
@@ -48,9 +68,8 @@ view model =
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.sandbox
         { view = view
-        , init = \_ -> init
+        , init = init
         , update = update
-        , subscriptions = always Sub.none
         }
