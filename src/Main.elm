@@ -58,7 +58,7 @@ view model =
 
 viewWaffles : Model -> Html Msg
 viewWaffles model =
-    div []
+    div [ class "waffles" ]
         (List.repeat model (img [ class "img", src "/static/img/waffle.png" ] []))
 
 
